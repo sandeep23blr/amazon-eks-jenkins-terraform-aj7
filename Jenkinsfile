@@ -67,7 +67,8 @@ pipeline {
     environment {
         TARGET_VM = 'ec2-user@13.201.137.23'  // Replace with actual user and target VM IP
         SSH_KEY_CREDENTIALS = 'SSHtoken'  // Replace with your Jenkins SSH key credentials ID
-        MAVEN_OPTS = '-Xmx2048m -XX:MaxMetaspaceSize=512m'  // Increased memory settings
+        MAVEN_OPTS = 'MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
+'  // Increased memory settings
     }
     stages {
         stage('Build Application') { 
