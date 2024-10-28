@@ -67,7 +67,7 @@ pipeline {
     environment {
         TARGET_VM = 'ec2-user@13.201.137.23'  // Replace with actual user and target VM IP
         SSH_KEY_CREDENTIALS = 'SSHtoken'  // Replace with your Jenkins SSH key credentials ID
-        MAVEN_OPTS = '-Xmx1024m'  // Updated memory settings for Maven
+        MAVEN_OPTS = '-Xmx2048m -XX:MaxMetaspaceSize=512m'  // Increased memory settings
     }
     stages {
         stage('Build Application') { 
@@ -79,11 +79,11 @@ pipeline {
         stage('Test Application') {
             steps {
                 echo '=== Testing Petclinic Application ==='
-                sh 'mvn -e -X test'
+                sh 'mvn -e -X test'  // Added -e for error logging
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit '**/target/surefire-reports/*.xml'  // Ensure correct path for junit
                 }
                 failure {
                     echo 'Tests failed. Please check the Surefire reports for details.'
@@ -127,7 +127,7 @@ pipeline {
         stage('Deploy to Target VM') {
             steps {
                 echo '=== Deploying to Target VM ==='
-                sshagent(credentials: [SSHtoken]) {
+                sshagent(credentials: [SSH_KEY_CREDENTIALS]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no $TARGET_VM 'docker pull ibuchh/petclinic-spinnaker-jenkins:$SHORT_COMMIT && docker stop petclinic || true && docker rm petclinic || true && docker run -d --name petclinic -p 8083:8080 ibuchh/petclinic-spinnaker-jenkins:$SHORT_COMMIT'
                     """
