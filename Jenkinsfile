@@ -67,7 +67,7 @@ pipeline {
     environment {
         TARGET_VM = 'ec2-user@13.201.137.23'  // Replace with actual user and target VM IP
         SSH_KEY_CREDENTIALS = 'SSHtoken'  // Replace with your Jenkins SSH key credentials ID
-        MAVEN_OPTS = '-Xmx1024m -XX:MaxPermSize=256m'  // Memory settings for Maven
+        MAVEN_OPTS = '-Xmx1024m'  // Updated memory settings for Maven
     }
     stages {
         stage('Build Application') { 
@@ -79,12 +79,10 @@ pipeline {
         stage('Test Application') {
             steps {
                 echo '=== Testing Petclinic Application ==='
-                // Run tests with more memory and debug information for better diagnostics
                 sh 'mvn -e -X test'
             }
             post {
                 always {
-                    // Update the test result file pattern if tests are in a different location
                     junit '**/target/surefire-reports/*.xml'
                 }
                 failure {
@@ -110,7 +108,7 @@ pipeline {
             steps {
                 echo '=== Pushing Petclinic Docker Image ==='
                 script {
-                    GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+                    GIT_COMMIT_HASH = sh(script: "git log -n 1 --pretty=format:'%H'", returnStdout: true).trim()
                     SHORT_COMMIT = GIT_COMMIT_HASH.substring(0, 7)
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerHubCredentials') {
                         app.push("$SHORT_COMMIT")
@@ -138,5 +136,4 @@ pipeline {
         }
     }
 }
-
 
