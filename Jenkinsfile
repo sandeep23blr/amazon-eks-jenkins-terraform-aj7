@@ -65,7 +65,7 @@ pipeline {
         pollSCM "* * * * *"
     }
     environment {
-        TARGET_VM = 'ec2-user@13.201.137.23'  // Replace with actual user and target VM IP
+        TARGET_VM = 'ec2-user@13.232.55.155'  // Replace with actual user and target VM IP
         SSH_KEY_CREDENTIALS = 'SSHtoken'  // Replace with your Jenkins SSH key credentials ID
         MAVEN_OPTS = "-Xmx1024m" // Increased memory settings, removed MaxPermSize
     }
@@ -127,7 +127,7 @@ pipeline {
         stage('Deploy to Target VM') {
             steps {
                 echo '=== Deploying to Target VM ==='
-                sshagent(credentials: [SSH_KEY_CREDENTIALS]) {
+                sshagent(credentials: [SSHtoken]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no $TARGET_VM 'docker pull ibuchh/petclinic-spinnaker-jenkins:$SHORT_COMMIT && docker stop petclinic || true && docker rm petclinic || true && docker run -d --name petclinic -p 8083:8080 ibuchh/petclinic-spinnaker-jenkins:$SHORT_COMMIT'
                     """
