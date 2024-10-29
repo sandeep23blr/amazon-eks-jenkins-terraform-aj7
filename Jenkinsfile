@@ -65,7 +65,7 @@ pipeline {
         pollSCM "* * * * *"
     }
     environment {
-        TARGET_VM = 'ec2-user@13.232.55.155'  // Replace with actual user and target VM IP
+        TARGET_VM = 'ec2-user@3.110.153.6'  // Replace with actual user and target VM IP
         SSH_KEY_CREDENTIALS = 'SSHtoken'  // Replace with your Jenkins SSH key credentials ID
         MAVEN_OPTS = "-Xmx1024m" // Increased memory settings, removed MaxPermSize
     }
