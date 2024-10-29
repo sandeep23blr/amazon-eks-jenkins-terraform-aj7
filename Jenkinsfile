@@ -113,7 +113,7 @@ pipeline {
         stage('Deploy to Target VM') {
             steps {
                 echo '=== Deploying to Target VM ==='
-                sshagent(credentials: [SSH_KEY_CREDENTIALS]) {
+                sshagent(credentials: [SSHtoken]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no $TARGET_VM 'docker load -i /tmp/petclinic-app.tar && docker stop petclinic || true && docker rm petclinic || true && docker run -d --name petclinic -p 8083:8080 petclinic-app:$SHORT_COMMIT'
                     """
